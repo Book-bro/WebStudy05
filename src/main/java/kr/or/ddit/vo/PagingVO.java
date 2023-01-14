@@ -12,48 +12,48 @@ import oracle.jdbc.proxy.annotation.GetProxy;
  * 
  */
 //setter는 두가지만 사용
-@Getter
-@NoArgsConstructor
-@ToString
+@Getter				
+@NoArgsConstructor	//기본생성자 생성
+@ToString			
 public class PagingVO<T> {
 	
-	public PagingVO(int screenSize, int blockSize) {
+	public PagingVO(int screenSize, int blockSize) {	//컨트롤러에서 임의 설정
 		super();
 		this.screenSize = screenSize;
 		this.blockSize = blockSize;
 	}
 
-	private int totalRecord; // DB 조회 해서 가져옴
-	private int screenSize = 10; // 임의 설정
-	private int blockSize = 5; // 임의 설정
+	private int totalRecord; 		//총게시물 수, DB 조회 해서 가져옴
+	private int screenSize = 10; 	//한 페이지당 리스트 수, 임의 설정
+	private int blockSize = 5; 		//한 화면에 보여줄 페이지 수, 임의 설정
 	
-	private int currentPage; // 클라이언트 파라미터로 결정
+	private int currentPage; 		//현재페이지, 클라이언트 파라미터로 결정
 	
-	private int totalPage;
-	private int startRow;
-	private int endRow;
-	private int startPage;
-	private int endPage;
+	private int totalPage;			//총페이지 수
+	private int startRow;			//시작 게시물 번호
+	private int endRow;				//종료 게시물 번호
+	private int startPage;			//시작 페이지 번호
+	private int endPage;			//종료 페이지 번호
 	
-	private List<T> dataList;
+	private List<T> dataList;		//해당타입의 데이터 목록
 	
 	private SearchVO simpleCondition; //단순 키워드 검색용
 	private T detailCondition; //상세 검색용
 	
-	public void setDetailCondition(T detailCondition) {
+	public void setDetailCondition(T detailCondition) {	//상세 검색 받아 넣어줌
 		this.detailCondition = detailCondition;
 	}
 	
-	public void setSimpleCondition(SearchVO simpleCondition) {
+	public void setSimpleCondition(SearchVO simpleCondition) {	//단순 키워드 받어 넣어줌
 		this.simpleCondition = simpleCondition;
 	}
 	
-	public void setDataList(List<T> dataList) {
+	public void setDataList(List<T> dataList) {		//해당타입의 데이터 목록 넣어줌
 		this.dataList = dataList;
 	}
 	
 	//이 메소드가 호출되는 시점에서 계산됨
-	public void setTotalRecord(int totalRecord) {
+	public void setTotalRecord(int totalRecord) {	
 		this.totalRecord = totalRecord;
 		totalPage = (totalRecord + (screenSize - 1)) / screenSize;
 	}
