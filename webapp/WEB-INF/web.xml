@@ -16,6 +16,7 @@
 		<param-value>/WEB-INF/spring/*-context.xml</param-value>
 	</context-param>
 
+	<!-- listener : 이벤트 발생시 동작 -->
 	<!-- ServletContext initialized(서버시작시) 이벤트에서 상위 컨테이너 생성을 위한 이벤트 핸들러 -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

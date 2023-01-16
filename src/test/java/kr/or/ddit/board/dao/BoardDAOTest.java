@@ -48,6 +48,10 @@ public class BoardDAOTest {
 
 	@Test
 	public void testSelectBoard() {
+		BoardVO board = boardDAO.selectBoard(38);
+		assertNotNull(board);
+		board.getAttatchList()
+			.stream().forEach(System.out::println);
 	}
 
 	@Test

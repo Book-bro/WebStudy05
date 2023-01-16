@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import kr.or.ddit.board.service.BoardService;
 import kr.or.ddit.board.vo.BoardVO;
@@ -17,7 +18,7 @@ import kr.or.ddit.vo.SearchVO;
 // /board/boardList.do (검색조건 : 작성자, 글의내용 ,전체)
 @Controller
 @RequestMapping("/board")
-public class BoardListController {
+public class BoardRetrieveController {
 	@Inject
 	private BoardService service;
 	
@@ -36,6 +37,21 @@ public class BoardListController {
 		model.addAttribute("pagingVO", pagingVO);
 		
 		return "board/boardList";
+	}
+	
+	@RequestMapping("boardView.do")
+	public ModelAndView boardView(
+			@RequestParam("what") int boNo
+	) {
+		ModelAndView mav = new ModelAndView();
+		
+		BoardVO board = service.retrieveBoard(boNo);
+		
+		mav.addObject("board", board);
+		
+		mav.setViewName("board/boardView");
+		
+		return mav;
 	}
 	
 }

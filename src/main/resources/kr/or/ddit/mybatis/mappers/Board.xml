@@ -47,9 +47,48 @@
 		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
 	</select>
 	
+	<!-- has 관계를 위해 resultMap을 사용 -->
+	<resultMap type="BoardVO" id="boardMap" autoMapping="true">
+		<id property="boNo" column="BOARD_NO"/> <!-- 컬럼의 중복생성을 피하기위해 특정 앨리어스를 적용 -->
+		<collection property="attatchList" ofType="AttatchVO" autoMapping="true"/>
+	</resultMap>
 	
+	<!-- 보드와 첨푸파일 테이블 조인 -->
+	<select id="selectBoard" parameterType="int" resultMap="boardMap">
+		SELECT
+		    a.bo_no BOARD_NO,
+		    bo_title,
+		    bo_writer,
+		    bo_ip,
+		    bo_mail,
+		    bo_pass,
+		    bo_content,
+		    bo_date,
+		    bo_hit,
+		    att_no,
+		    att_filename,
+		    att_savename,
+		    att_mime,
+		    att_fancysize,
+		    att_download,
+		    b.BO_NO
+		FROM
+		    freeboard a left outer join attatch b on(a.bo_no = b.bo_no)
+		WHERE a.BO_NO = #{boNo}
+	</select>
+	
+	<update id="incrementHit" parameterType="int">
+		UPDATE FREEBOARD
+		SET
+		BO_HIT = BO_HIT + 1
+		WHERE BO_NO = #{boNo}
+	</update>
 	
 	<insert id="insertBoard" parameterType="BoardVO">
+		<selectKey order="BEFORE" resultType="int" keyProperty="boNo">
+			SELECT FREEBOARD_SEQ.NEXTVAL
+			FROM DUAL
+		</selectKey>
 		INSERT INTO freeboard (
 		    bo_no,
 		    bo_title,
@@ -68,12 +107,11 @@
 			, #{boMail,jdbcType=VARCHAR}
 			, #{boPass,jdbcType=VARCHAR}
 			, #{boContent,jdbcType=CLOB}
-			, To_DATE(#{boDate,jdbcType=DATE}, 'YYYY-MM-DD')
-			, #{boHit,jdbcType=NUMERIC}
+			, sysdate
+			, 0
 		)
 	</insert>
 	
-	<update id="updateBoard"></update>
 	
 	<delete id="deleteBoard"></delete>
 

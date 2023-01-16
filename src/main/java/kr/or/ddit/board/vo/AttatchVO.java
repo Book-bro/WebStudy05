@@ -1,20 +1,27 @@
 package kr.or.ddit.board.vo;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(of="attNo")	//연관관계가 복잡해지면 오버플로우가 발생함으로 id값 설정해줌
 @NoArgsConstructor 				//DB에서 보내는것을 받으려면 기본생성자가 필요
+@ToString(exclude="realFile")
 public class AttatchVO implements Serializable{
-	private MultipartFile realFile;	//MultipartFile : 파일업로드 타입
+	@JsonIgnore
+	private transient MultipartFile realFile;	//MultipartFile : 파일업로드 타입
 	//클라이언트가 보내주는 파일을 받음
 	public AttatchVO(MultipartFile realFile) {  
 		super();
@@ -34,4 +41,10 @@ public class AttatchVO implements Serializable{
 	private Long attFilesize;	//파일크기
 	private String attFancysize;//팬시크기
 	private Integer attDownload;//다운로드수
+	
+	public void saveTo(File saveFolder) throws IOException {
+		//파일이 있을때 저장해야함
+		if(realFile==null || realFile.isEmpty()) return;
+		realFile.transferTo(new File(saveFolder, attSavename));
+	}
 }
